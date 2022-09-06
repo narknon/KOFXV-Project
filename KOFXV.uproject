@@ -164,6 +164,10 @@
 			"Enabled": false
 		},
 		{
+			"Name": "ChaosEditor",
+			"Enabled": false
+		},
+		{
 			"Name": "KawaiiPhysics",
 			"Enabled": true,
 			"MarketplaceURL": "KawaiiPhysics : Simple fake Physics for UnrealEngine4"
