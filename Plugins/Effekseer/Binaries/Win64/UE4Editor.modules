@@ -1,0 +1,8 @@
+{
+	"BuildId": "14830424",
+	"Modules": 
+	{
+		"Effekseer": "UE4Editor-Effekseer.dll",
+		"EffekseerEd": "UE4Editor-EffekseerEd.dll"
+	}
+}

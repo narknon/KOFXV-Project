@@ -42,7 +42,7 @@ public:
     TArray<FPrimaryAssetId> GetLoadedList(ELoadChannel Channel) const;
     
     UFUNCTION(BlueprintCallable, BlueprintPure)
-    static TArray<FName> Explicit(Array)();
+    static TArray<FName> ExplicitArray();
     
     UFUNCTION(BlueprintCallable, BlueprintPure)
     static FName Explicit();

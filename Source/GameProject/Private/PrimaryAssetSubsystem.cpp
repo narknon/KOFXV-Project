@@ -31,7 +31,7 @@ TArray<FPrimaryAssetId> UPrimaryAssetSubsystem::GetLoadedList(ELoadChannel Chann
     return TArray<FPrimaryAssetId>();
 }
 
-TArray<FName> UPrimaryAssetSubsystem::Explicit(Array)() {
+TArray<FName> UPrimaryAssetSubsystem::ExplicitArray() {
     return TArray<FName>();
 }
 

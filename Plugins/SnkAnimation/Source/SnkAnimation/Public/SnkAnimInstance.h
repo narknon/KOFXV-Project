@@ -1,6 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "CablePhysicsArgument.h"
+#include "KawaiiPhysicsArgument.h"
 #include "Animation/AnimInstance.h"
 #include "SnkAnimationArgument.h"
 //CROSS-MODULE INCLUDE V2: -ModuleName=KawaiiPhysics -ObjectName=KawaiiPhysicsArgument -FallbackName=KawaiiPhysicsArgument

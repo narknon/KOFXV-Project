@@ -39,6 +39,6 @@ enum class ETutorialID : uint8 {
     Super_Cancel,
     Advanced_Cancel,
     Climax_Cancel,
-    Max,
+    _Max,
 };
 

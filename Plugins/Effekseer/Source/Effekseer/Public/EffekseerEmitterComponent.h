@@ -1,105 +1,94 @@
+
 #pragma once
+
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
-#include "EffekseerHandle.h"
 #include "Components/PrimitiveComponent.h"
-#include "UObject/NoExportTypes.h"
-#include "ERenderType.h"
-#include "EffekseerEmitterOnEventDispatcherDelegate.h"
-#include "EProgrammableTranslationFuncType.h"
-#include "EProgrammableTranslationLocationSpaceType.h"
+#include "EngineUtils.h"
+
+#include "EffekseerEffect.h"
+#include "EffekseerHandle.h"
+
 #include "EffekseerEmitterComponent.generated.h"
 
-class UEffekseerSystemComponent;
-class USkeletalMeshComponent;
-class UEffekseerEffect;
-class AActor;
+UCLASS(ClassGroup = (Effekseer), meta = (BlueprintSpawnableComponent))
+class EFFEKSEER_API UEffekseerEmitterComponent : public UPrimitiveComponent
+{
+	GENERATED_BODY()
 
-UCLASS(Blueprintable, ClassGroup=Custom, meta=(BlueprintSpawnableComponent))
-class EFFEKSEER_API UEffekseerEmitterComponent : public UPrimitiveComponent {
-    GENERATED_BODY()
+private:
+	bool		shouldActivate = false;
+	bool		isPlaying = false;
+	FEffekseerHandle		handle;
+
+	FColor AllColor_ = FColor(255, 255, 255, 255);
+	float Speed_ = 1.0f;
+	TArray<float> DynamicInput_;
+	
+	//! HACK for activate
+	bool autoActivateOnActivate_ = false;
+
+	void ApplyParameters(bool forced);
+
 public:
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(AllowPrivateAccess=true))
-    FEffekseerHandle Handle;
-    
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(AllowPrivateAccess=true))
-    uint8 bAutoDestroy: 1;
-    
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(AllowPrivateAccess=true))
-    UEffekseerEffect* Effect;
-    
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(AllowPrivateAccess=true))
-    AActor* System;
-    
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(AllowPrivateAccess=true))
-    bool IsLooping;
-    
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(AllowPrivateAccess=true))
-    FColor AllColor;
-    
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(AllowPrivateAccess=true))
-    float Speed;
-    
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(AllowPrivateAccess=true))
-    TArray<float> DynamicInput;
-    
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, Export, Transient, meta=(AllowPrivateAccess=true))
-    UEffekseerSystemComponent* system_;
-    
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(AllowPrivateAccess=true))
-    ERenderType RenderType;
-    
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(AllowPrivateAccess=true))
-    FVector TargetLocation;
-    
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(AllowPrivateAccess=true))
-    bool EnableHighContrast;
-    
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(AllowPrivateAccess=true))
-    float MultiplyInContrast;
-    
-    UPROPERTY(BlueprintAssignable, BlueprintReadWrite, EditAnywhere, meta=(AllowPrivateAccess=true))
-    FEffekseerEmitterOnEventDispatcher OnPlayed;
-    
-    UEffekseerEmitterComponent();
-    UFUNCTION(BlueprintCallable)
-    void StopRoot();
-    
-    UFUNCTION(BlueprintCallable)
-    void Stop();
-    
-    UFUNCTION(BlueprintCallable)
-    void SetSkeletalMeshForBoneBindFunction(USkeletalMeshComponent* SkeletalMesh);
-    
-    UFUNCTION(BlueprintCallable)
-    void SetSearchableBoneNamesForBoneBindFunction(TArray<FName> BoneNames);
-    
-    UFUNCTION(BlueprintCallable)
-    void SetProgrammableTranlationFunc(EProgrammableTranslationFuncType transFuncType, EProgrammableTranslationLocationSpaceType locationSpace);
-    
-    UFUNCTION(BlueprintCallable)
-    void SetPlaySpeed(float newSpeed);
-    
-    UFUNCTION(BlueprintCallable)
-    void SetPlayFromBeginningFlag(bool fromBeginningFlag);
-    
-    UFUNCTION(BlueprintCallable)
-    void SetPlayerID(int32 _playerID);
-    
-    UFUNCTION(BlueprintCallable)
-    void SetParticleVisibility(bool Visibility);
-    
-    UFUNCTION(BlueprintCallable)
-    void SetParticleTargetLocation(FVector _targetLocation);
-    
-    UFUNCTION(BlueprintCallable)
-    void SetParticleSpawnFlag(bool spawnFlag);
-    
-    UFUNCTION(BlueprintCallable)
-    FEffekseerHandle Play(bool bImmediate);
-    
-    UFUNCTION(BlueprintCallable, BlueprintPure)
-    bool Exists() const;
-    
-};
+	UEffekseerEmitterComponent(const FObjectInitializer& ObjectInitializer);
+	virtual ~UEffekseerEmitterComponent();
 
+#if WITH_EDITOR
+	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
+
+	virtual void BeginPlay() override;
+
+	virtual void BeginDestroy() override;
+
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	virtual void Activate(bool bReset = false) override;
+
+	virtual void Deactivate() override;
+
+	virtual void OnUnregister() override;
+
+	virtual void Serialize(FArchive& Ar) override;
+
+#if WITH_EDITOR
+	UFUNCTION(BlueprintCallable, CallInEditor, Category = Effect)
+		void Preview();
+#endif
+
+	UPROPERTY()
+	uint8 bAutoDestroy : 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect)
+	UEffekseerEffect* Effect = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect)
+	AActor* System = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Property)
+	bool IsLooping = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Property)
+	FColor AllColor = FColor(255, 255, 255, 255);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Property)
+	float Speed = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Property)
+	TArray<float> DynamicInput;
+
+	UPROPERTY(Transient)
+	UEffekseerSystemComponent* system_ = nullptr;
+
+	UFUNCTION(BlueprintCallable, Category = Effect)
+	void Stop();
+
+	UFUNCTION(BlueprintCallable, Category = Effect)
+	void StopRoot();
+
+	UFUNCTION(BlueprintCallable, Category = Effect)
+	bool Exists() const;
+
+	UFUNCTION(BlueprintCallable, Category = Deprecated)
+	FEffekseerHandle Play();
+};
