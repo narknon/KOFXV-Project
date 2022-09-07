@@ -11,12 +11,12 @@
 		"MajorVersion": 4,
 		"MinorVersion": 26,
 		"PatchVersion": 2,
-		"Changelist": 15973114,
+		"Changelist": 0,
 		"CompatibleChangelist": 14830424,
 		"IsLicenseeVersion": 0,
 		"IsPromotedBuild": 0,
 		"BranchName": "++UE4+Release-4.26",
-		"BuildId": "14830424"
+		"BuildId": "12bc799a-50e0-4567-9f7b-ba9accb0a9fd"
 	},
 	"BuildProducts": [
 		{
@@ -126,10 +126,6 @@
 			"Type": "UFS"
 		},
 		{
-			"Path": "$(ProjectDir)/Plugins/EnginePlugins/Runtime/PropertyAccess/PropertyAccessEditor.uplugin",
-			"Type": "UFS"
-		},
-		{
 			"Path": "$(ProjectDir)/Plugins/MultipleExceptionPrevention/MultipleExceptionPrevention.uplugin",
 			"Type": "UFS"
 		},
@@ -167,6 +163,10 @@
 		},
 		{
 			"Path": "$(EngineDir)/Plugins/Developer/PluginUtils/PluginUtils.uplugin",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Runtime/PropertyAccess/PropertyAccessEditor.uplugin",
 			"Type": "UFS"
 		},
 		{
@@ -1486,7 +1486,15 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Content/Slate/Old/Tiles/DottedCircleBox_L.psd",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Content/Slate/Old/Tiles/DottedCircleBox_LR.png",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Content/Slate/Old/Tiles/DottedCircleBox_LR.psd",
 			"Type": "UFS"
 		},
 		{
@@ -1499,6 +1507,10 @@
 		},
 		{
 			"Path": "$(EngineDir)/Content/Slate/Old/Tiles/DottedCircleBox_R.png",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Content/Slate/Old/Tiles/DottedCircleBox_R.psd",
 			"Type": "UFS"
 		},
 		{
@@ -1570,6 +1582,10 @@
 			"Type": "UFS"
 		},
 		{
+			"Path": "$(EngineDir)/Content/Slate/Old/Tiles/pin/pin.psd",
+			"Type": "UFS"
+		},
+		{
 			"Path": "$(EngineDir)/Content/Slate/Old/Tiles/pin/ping.png",
 			"Type": "UFS"
 		},
@@ -1595,6 +1611,10 @@
 		},
 		{
 			"Path": "$(EngineDir)/Content/Slate/Old/Tiles/pin/pin_stick.png",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Content/Slate/Old/Tiles/pin/reitment.psd",
 			"Type": "UFS"
 		},
 		{
