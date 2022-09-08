@@ -131,6 +131,7 @@
 !/Content/Mods/ExampleLogicMod/ModActor.uasset
 !/Content/LogicMods.uasset
 !/Content/Chara/ColorData.uasset
+!Plugins/**/Content/**
 
 # Ignore intermediate folders
 Intermediate/
