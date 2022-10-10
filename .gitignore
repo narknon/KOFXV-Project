@@ -125,12 +125,11 @@
 !/Binaries/Win64/*
 !/Plugins/**/Binaries/Win64/*
 *.pdb
+/Plugins/Wwise/ThirdParty/*/*/*/*.pdb
+!/Plugins/Wwise/ThirdParty**
 
 
 # Ignore content folders
-!/Content/Mods/ExampleLogicMod/ModActor.uasset
-!/Content/LogicMods.uasset
-!/Content/Chara/ColorData.uasset
 !Plugins/**/Content/**
 
 # Ignore intermediate folders
@@ -150,3 +149,4 @@ obj/
 
 # Explcitly ignore Mac DS_Store files, regardless of where they are
 .DS_Store
+*.pdb
