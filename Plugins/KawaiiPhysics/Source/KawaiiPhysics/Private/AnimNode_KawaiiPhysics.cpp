@@ -72,11 +72,23 @@ void FAnimNode_KawaiiPhysics::EvaluateSkeletalControl_AnyThread(FComponentSpaceP
 	}
 #endif
 
-	if (!RootBone.IsValidToEvaluate(BoneContainer))
+	bool bisValid = false;
+	for (FBoneReference RootBone : RootBones)
+	{
+		if (RootBone.IsValidToEvaluate(BoneContainer))
+		{
+			bisValid = true;
+		}
+		else
+		{
+			bisValid = false;
+			return;
+		}
+	if (!bisValid)
 	{
 		return;
 	}
-
+		
 	if (ModifyBones.Num() == 0)
 	{
 		InitModifyBones(Output, BoneContainer);
@@ -134,18 +146,35 @@ void FAnimNode_KawaiiPhysics::EvaluateSkeletalControl_AnyThread(FComponentSpaceP
 
 	// Simulate Physics and Apply
 	SimulateModifyBones(Output, BoneContainer, ComponentTransform);
-	ApplySimuateResult(Output, BoneContainer, OutBoneTransforms);
+	/*ApplySimuateResult(Output, BoneContainer, OutBoneTransforms);*/
+	}
 }
 
 bool FAnimNode_KawaiiPhysics::IsValidToEvaluate(const USkeleton* Skeleton, const FBoneContainer& RequiredBones)
 {
-	return RootBone.IsValidToEvaluate(RequiredBones);
+	bool bisValid = false;
+	for (FBoneReference RootBone : RootBones)
+	{
+		if (RootBone.IsValidToEvaluate(RequiredBones))
+		{
+			bisValid = true;
+		}
+		else 
+		{
+			bisValid = false;
+			return bisValid;
+		}
+	}
+	return bisValid;
 }
 
 void FAnimNode_KawaiiPhysics::InitializeBoneReferences(const FBoneContainer& RequiredBones)
 {
-	RootBone.Initialize(RequiredBones);
-
+	for (FBoneReference& RootBone : RootBones)
+	{
+		RootBone.Initialize(RequiredBones);
+	}
+	
 	for (auto& Bone : ModifyBones)
 	{
 		Bone.BoneRef.Initialize(RequiredBones);
@@ -176,7 +205,10 @@ void FAnimNode_KawaiiPhysics::InitModifyBones(FComponentSpacePoseContext& Output
 	auto& RefSkeleton = Skeleton->GetReferenceSkeleton();
 
 	ModifyBones.Empty();
-	AddModifyBone(Output, BoneContainer, RefSkeleton, RefSkeleton.FindBoneIndex(RootBone.BoneName));
+	for (FBoneReference RootBone : RootBones)
+	{
+		AddModifyBone(Output, BoneContainer, RefSkeleton, RefSkeleton.FindBoneIndex(RootBone.BoneName));
+	}
 	if (ModifyBones.Num() > 0)
 	{
 		CalcBoneLength(ModifyBones[0], BoneContainer.GetRefPoseCompactArray());

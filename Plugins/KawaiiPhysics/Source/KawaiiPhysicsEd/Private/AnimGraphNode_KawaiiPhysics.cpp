@@ -29,7 +29,8 @@ FText UAnimGraphNode_KawaiiPhysics::GetNodeTitle(ENodeTitleType::Type TitleType)
 	{
 		FFormatNamedArguments Args;
 		Args.Add(TEXT("ControllerDescription"), GetControllerDescription());
-		Args.Add(TEXT("RootBoneName"), FText::FromName(Node.RootBone.BoneName));
+		
+		for (FBoneReference RootBone : Node.RootBones) Args.Add(TEXT("RootBoneName"), FText::FromName(RootBone.BoneName));
 
 		// FText::Format() is slow, so we cache this to save on performance
 		if (TitleType == ENodeTitleType::ListView || TitleType == ENodeTitleType::MenuTitle)
@@ -113,17 +114,20 @@ void UAnimGraphNode_KawaiiPhysics::ValidateAnimNodePostCompile(FCompilerResultsL
 {
 	UAnimGraphNode_SkeletalControlBase::ValidateAnimNodePostCompile(MessageLog, CompiledClass, CompiledNodeIndex);
 
-	Node.RootBone.Initialize(CompiledClass->TargetSkeleton);
-	if (Node.RootBone.BoneIndex >= 0)
+	for (FBoneReference RootBone : Node.RootBones)
 	{
-		if (Node.ExcludeBones.Contains(Node.RootBone))
+		RootBone.Initialize(CompiledClass->TargetSkeleton);
+		if (RootBone.BoneIndex >= 0)
 		{
-			MessageLog.Warning(TEXT("@@ ExcludeBones should NOT has RootBone."), this);
+			if (Node.ExcludeBones.Contains(RootBone))
+			{
+				MessageLog.Warning(TEXT("@@ ExcludeBones should NOT have RootBone."), this);
+			}
 		}
-	}
-	else
-	{
-		MessageLog.Warning(TEXT("@@ RootBone is empty."), this);
+		else
+		{
+			MessageLog.Warning(TEXT("@@ RootBone is empty."), this);
+		}
 	}
 	
 }

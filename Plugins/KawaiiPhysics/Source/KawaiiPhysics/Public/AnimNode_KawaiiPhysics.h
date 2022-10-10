@@ -9,6 +9,7 @@
 
 #include "BoneContainer.h"
 #include "BonePose.h"
+#include "KawaiiPhysicsArgument.h"
 #include "BoneControllers/AnimNode_SkeletalControlBase.h"
 //#include "KawaiiPhysicsLimitsDataAsset.h"
 
@@ -17,7 +18,14 @@ class UKawaiiPhysicsLimitsDataAsset;
 #include "AnimNode_KawaiiPhysics.generated.h"
 
 
-UENUM()
+UENUM(BlueprintType)
+enum class EBoneCollisionType : uint8
+{
+	Sphere,
+	Capsule,
+};
+
+UENUM(BlueprintType)
 enum class EPlanarConstraint : uint8
 {
 	None,
@@ -26,7 +34,7 @@ enum class EPlanarConstraint : uint8
 	Z,
 };
 
-UENUM()
+UENUM(BlueprintType)
 enum class EBoneForwardAxis : uint8
 {
 	X_Positive,
@@ -38,7 +46,7 @@ enum class EBoneForwardAxis : uint8
 };
 
 
-UENUM()
+UENUM(BlueprintType)
 enum class ECollisionLimitType : uint8
 {
 	None,
@@ -47,7 +55,7 @@ enum class ECollisionLimitType : uint8
 	Planar,
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FCollisionLimitBase
 {
 	GENERATED_BODY();
@@ -83,7 +91,7 @@ struct FCollisionLimitBase
 
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FSphericalLimit : public FCollisionLimitBase
 {
 	GENERATED_BODY();
@@ -104,7 +112,7 @@ struct FSphericalLimit : public FCollisionLimitBase
 	ESphericalLimitType LimitType = ESphericalLimitType::Outer;
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FCapsuleLimit : public FCollisionLimitBase
 {
 	GENERATED_BODY();
@@ -124,7 +132,7 @@ struct FCapsuleLimit : public FCollisionLimitBase
 	float Length = 10.0f;
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FPlanarLimit : public FCollisionLimitBase
 {
 	GENERATED_BODY();
@@ -157,9 +165,24 @@ struct KAWAIIPHYSICS_API FKawaiiPhysicsSettings
 	float Radius = 3.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (PinHiddenByDefault, ClampMin = "0"), category = "KawaiiPhysics")
 	float LimitAngle = 0.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0"), category = "SNKKawaiiPhysics")
+	float AngularLimits1 = 0.0f;
+    
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0"), category = "SNKKawaiiPhysics")
+	float AngularLimits2 = 0.0f;
+    
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0"), category = "SNKKawaiiPhysics")
+	float AngularLimitsOffset1 = 0.0f;
+    
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "0"), category = "SNKKawaiiPhysics")
+	float AngularLimitsOffset2 = 0.0f;
+    
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, category = "SNKKawaiiPhysics")
+	EBoneCollisionType CollisionType = EBoneCollisionType::Sphere;
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct KAWAIIPHYSICS_API FKawaiiPhysicsModifyBone
 {
 	GENERATED_USTRUCT_BODY()
@@ -191,6 +214,8 @@ public:
 	float LengthFromRoot;
 	UPROPERTY()
 	bool bDummy = false;
+	UPROPERTY()
+	FQuat LocalRotation;
 
 
 public:
@@ -220,14 +245,20 @@ struct KAWAIIPHYSICS_API FAnimNode_KawaiiPhysics : public FAnimNode_SkeletalCont
 
 public:
 	UPROPERTY(EditAnywhere, Category = ModifyTarget)
-	FBoneReference RootBone;
+	TArray<FBoneReference> RootBones;
 	UPROPERTY(EditAnywhere, Category = ModifyTarget)
 	TArray<FBoneReference> ExcludeBones;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SNK Physics Argument")
+	FKawaiiPhysicsArgument KawaiiPhysicsArgument;
 
 	UPROPERTY(EditAnywhere, Category = TargetFramerate, meta = (EditCondition = "OverrideTargetFramerate"))
 	int TargetFramerate = 60;
 	UPROPERTY(EditAnywhere, Category = TargetFramerate, meta = (InlineEditConditionToggle))
 	bool OverrideTargetFramerate = false;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SNK Custom")
+	bool UseSeparateLimitAngle = false;
 
 	/** Settings for control of physical behavior */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Physics Settings", meta = (PinHiddenByDefault))
@@ -289,8 +320,19 @@ public:
 	TArray< FCapsuleLimit> CapsuleLimitsData;
 	UPROPERTY(VisibleAnywhere, AdvancedDisplay, Category = "Limits Data(Experimental)")
 	TArray< FPlanarLimit> PlanarLimitsData;
+	
+	/** SNK Custom */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Teleport")
+	bool ResetAfterTeleport = false;
 
+	/** SNK Custom */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Teleport")
+	float TeleportVelocityThreshold = 0.00f;
 
+	/** SNK Custom */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Teleport")
+	float TeleportRootBoneDistanceThreshold = 0.00f;
+	
 	/** If the movement amount of one frame exceeds the threshold, ignore the movement  */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Teleport", meta = (PinHiddenByDefault))
 	float TeleportDistanceThreshold = 300.0f;
@@ -309,6 +351,10 @@ public:
 	/** Scale to apply to calculated wind velocities in the solver */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Wind, meta = (DisplayAfter = "bEnableWind"), meta = (PinHiddenByDefault))
 	float WindScale = 1.0f;
+
+	/** SNK Custom */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Wind, meta = (PinHiddenByDefault))
+	bool isSensitive;
 
 	UPROPERTY()
 	TArray< FKawaiiPhysicsModifyBone > ModifyBones;
