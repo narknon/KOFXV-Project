@@ -252,6 +252,14 @@
 			"Type": "SymbolFile"
 		},
 		{
+			"Path": "$(ProjectDir)/Plugins/SnkAnimation/Binaries/Win64/UE4Editor-SnkAnimationEd.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(ProjectDir)/Plugins/SnkAnimation/Binaries/Win64/UE4Editor-SnkAnimationEd.pdb",
+			"Type": "SymbolFile"
+		},
+		{
 			"Path": "$(EngineDir)/Plugins/Media/ElectraPlayer/Binaries/Win64/UE4Editor-ElectraPlayerRuntime.dll",
 			"Type": "DynamicLibrary"
 		},
@@ -297,6 +305,14 @@
 		},
 		{
 			"Path": "$(EngineDir)/Plugins/Experimental/RawInput/Binaries/Win64/UE4Editor-RawInput.pdb",
+			"Type": "SymbolFile"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Marketplace/CModuleGenerator/Binaries/Win64/UE4Editor-ModuleGenerator.dll",
+			"Type": "DynamicLibrary"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Marketplace/CModuleGenerator/Binaries/Win64/UE4Editor-ModuleGenerator.pdb",
 			"Type": "SymbolFile"
 		},
 		{
@@ -4440,6 +4456,10 @@
 			"Type": "RequiredResource"
 		},
 		{
+			"Path": "$(EngineDir)/Plugins/Marketplace/CModuleGenerator/Binaries/Win64/UE4Editor.modules",
+			"Type": "RequiredResource"
+		},
+		{
 			"Path": "$(ProjectDir)/Plugins/DebugMenu/Binaries/Win64/UE4Editor.modules",
 			"Type": "RequiredResource"
 		},
@@ -4871,6 +4891,10 @@
 		},
 		{
 			"Path": "$(EngineDir)/Plugins/Experimental/RawInput/RawInput.uplugin",
+			"Type": "UFS"
+		},
+		{
+			"Path": "$(EngineDir)/Plugins/Marketplace/CModuleGenerator/ModuleGenerator.uplugin",
 			"Type": "UFS"
 		},
 		{

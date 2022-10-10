@@ -2,6 +2,7 @@
 	"BuildId": "d7ada3bb-f760-4439-ac6c-f2c64c5b496b",
 	"Modules": 
 	{
-		"SnkAnimation": "UE4Editor-SnkAnimation.dll"
+		"SnkAnimation": "UE4Editor-SnkAnimation.dll",
+		"SnkAnimationEd": "UE4Editor-SnkAnimationEd.dll"
 	}
 }
